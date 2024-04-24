@@ -5,6 +5,8 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -13,7 +15,8 @@ import { CreateSongDTO } from './dto/create-song-dto';
 
 @Controller('songs')
 export class SongsController {
-  constructor(private songsService: SongsService) {}
+  // this solves the problem of not instantiating classess again and again in the controller for every API
+  constructor(private songsService: SongsService) {} //injecting the dependency from providers array in app module
   @Post()
   create(@Body() createSongDTO: CreateSongDTO) {
     return this.songsService.create(createSongDTO);
@@ -35,8 +38,14 @@ export class SongsController {
   }
 
   @Get(':id')
-  findOne() {
-    return 'fetch songs based on id';
+  findOne(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    ) // converts parameter(string) to type number
+    id: number, // doesn't help in this case (pipe will)
+  ) {
+    return `fetch songs based on ${typeof id}`;
   }
 
   @Put(':id')

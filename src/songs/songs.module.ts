@@ -4,6 +4,8 @@ import { SongsService } from './songs.service';
 
 @Module({
   controllers: [SongsController],
-  providers: [SongsService],
+  // providers: [SongsService], :: Standard Provider
+  providers: [{ provide: SongsService, useClass: SongsService }], // Class Provider
+  // nest creates instance of the service caches it and returns it
 })
 export class SongsModule {}
